@@ -87,41 +87,6 @@ class DeleteReservItemView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('orders:reserv')
 
 
-
-
-class UpdateReservItemView(View):
-    def post(self, request, pk):
-        try:
-            # Fetch the reservation item
-            reserv_item = ReservItem.objects.get(pk=pk, reserv__user=request.user)
-
-            # Get new start and end dates from the request
-            new_start_date = request.POST.get('start_date')
-            new_end_date = request.POST.get('end_date')
-
-            # Validate start and end dates
-            if not new_start_date or not new_end_date:
-                messages.error(request, "Please provide both start and end dates.")
-                return redirect('orders:reserv')
-
-            # Update the reservation item dates
-            reserv_item.start_date = new_start_date
-            reserv_item.end_date = new_end_date
-
-            # Save the changes to the reservation item
-            reserv_item.save()
-
-            messages.success(request, "Reservation dates updated successfully.")
-
-        except ReservItem.DoesNotExist:
-            messages.error(request, "Reservation item not found or you are not authorized to update it.")
-
-        except Exception as e:
-            messages.error(request, f"An error occurred: {str(e)}")
-
-        return redirect('orders:reserv')
-
-
 #აჩვენებს იუზერის მიერ ყველა განთავსებულ რეზერვაციას.
 class OrderConfirmationView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('users:login')
@@ -193,6 +158,9 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     template_name = 'orders/order_detail.html'
     context_object_name = 'order'
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
