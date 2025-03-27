@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            {% include 'cars/category_filter.html' %}
+        </div>
+
+        <div class="col-md-9">
+            <form method="get" action="" class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="query" placeholder="Search"
+                        value="{{ request.GET.query }}">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+
+            <div class="row">
+               {% include 'cars/all_cars.html' %}
+            </div>
+
+            {% include 'cars/paginator.html' %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

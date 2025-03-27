@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4">My Profile</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <h4>User Information</h4>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Username:</strong> {{ user.username }} </li>
+                <li class="list-group-item">
+                    <strong>Password:</strong>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="collapse" data-bs-target="#changePasswordForm">Change Password</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="collapse mt-4" id="changePasswordForm">
+            <h5>Change Password</h5>
+            <form method="POST">
+                {% csrf_token %}
+                {{ password_form|crispy }}
+                <button type="submit" name="change_password" class="btn btn-danger">Submit</button>
+            </form>
+        </div>
+
+        <div class="col-md-8">
+            <h4>Profile Details</h4>
+            {% if profile.profile_image %}
+            <img src="{{profile.profile_image.url}}" class="img-thumbnail mb-3" alt="Profile Image"
+                 style="width: 150px; height: 150px;">
+            {% else %}
+                <p>Profile image isn't uploaded</p>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token  %}
+                {{ profile_form|crispy }}
+                <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Your Pre Reservations</h1>
+<div class="container mt-5">
+  {% if reserv_items %}
+    <ul>
+      {% for item in reserv_items %}
+        <li>
+          <strong>{{ item.car.model }}</strong> - Price: ${{ item.car.price }}
+
+                  <p>Reservation Till: {{ item.end_date|date:"Y-m-d"  }}
+
+          <!-- Delete Form -->
+          <form action="{% url 'orders:delete_reserv_item' item.pk %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="d-flex justify-content-end">
+        <h4>Total Amount: ${{ total_amount|floatformat:2 }}</h4>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <form method="get" action="{% url 'orders:order_confirmation' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Confirm Order</button>
+        </form>
+    </div>
+
+  {% else %}
+    <p>No cars for order</p>
+    <a href="{% url 'cars:index' %}">Continue to MainPage</a>
+  {% endif %}
+
+</div>
+{% endblock %}

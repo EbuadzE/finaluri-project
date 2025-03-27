@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Order Confirmation</h1>
+
+  <div>
+    <h2>Your Reserved Cars</h2>
+    {% if reserv_items %}
+      <ul>
+        {% for item in reserv_items %}
+          <li>
+            <strong>{{ item.car.name }}</strong> - Price: {{ item.car.price }} each
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h3>Total Amount: {{ total_amount }}</h3>
+
+      <form method="POST" action="{% url 'orders:add_order' %}">
+        {% csrf_token %}
+        <button type="submit">Place Order</button>
+      </form>
+    {% else %}
+      <p>You don't have any items in your reservation.</p>
+      <a href="{% url 'orders:reserv' %}">Go to reservation page</a>
+    {% endif %}
+  </div>
+{% endblock %}

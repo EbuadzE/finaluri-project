@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+   <div class="row">
+    <div class="col-md-6">
+        <div class="car-image">
+            {% if car.image %}
+                <img src="{{ car.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ car.model }}">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+        <div class="col-md-6">
+            <h1 class="car-name">{{ car.model }}</h1>
+            <h4 class="text-muted">Price: ${{ car.price }}</h4>
+
+            <p class="car-stock text-success">
+                {% if car.stock > 0 %}
+                <span class="text-success">In stock ({{ car.stock }}) available</span>
+                {% else %}
+                <span class="text-danger">Out of stock</span>
+                {% endif %}
+            </p>
+
+            <p class="mt-4">{{ car.description }}</p>
+
+            <p><strong>Categories:</strong> {{ car.category.all|join:", " }}</p>
+
+            <!-- Reservation Form Inline -->
+            <form method="post" action="{% url 'orders:add_reserv_item' car.id %}" class="row g-2 align-items-center">
+                {% csrf_token %}
+
+                <div class="col-md-4">
+                    <label for="start_date" class="form-label">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="end_date" class="form-label">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" required>
+                </div>
+
+                <div class="col-md-4 d-grid">
+                    <button type="submit" class="btn btn-lg btn-primary mt-4">Add to Reservation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Related Cars Section -->
+    {% if related_cars %}
+    <div class="related-cars mt-5">
+        <h3>Related Cars</h3>
+        <div class="row">
+            {% for related_car in related_cars %}
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <img src="{{ related_car.image.url }}" class="card-img-top" alt="{{ related_car.model }}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ related_car.model }}</h5>
+                        <p class="card-text">${{ related_car.price }}</p>
+                        <a href="{% url 'cars:detail_car' related_car.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+
+
+{% endblock %}
